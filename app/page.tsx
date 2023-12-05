@@ -6,6 +6,8 @@ import { useState } from "react";
 export default function Home() {
   const [latitude, setLatitude] = useState<number>(0);
   const [longitude, setLongitude] = useState<number>(0);
+  const [errorCode, setErrorCode] = useState<number>(0);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const success = (pos: GeolocationPosition) => {
     const crd = pos.coords;
@@ -13,7 +15,9 @@ export default function Home() {
     setLongitude(crd.longitude);
   };
 
-  const error = (err: any) => {
+  const error = (err: GeolocationPositionError) => {
+    setErrorCode(err.code);
+    setErrorMessage(err.message);
     console.warn(`ERROR(${err.code}): ${err.message}`);
   };
 
@@ -43,6 +47,12 @@ export default function Home() {
         <div className=" mb-2">緯度：{latitude}</div>
         <div>経度：{longitude}</div>
       </div>
+      {errorCode !== 0 && (
+        <div className="mt-10 text-center">
+          <div className=" mb-2">エラーコード：{errorCode}</div>
+          <div>エラーメッセージ：{errorMessage}</div>
+        </div>
+      )}
     </div>
   );
 }
